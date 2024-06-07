@@ -1,0 +1,69 @@
+  
+        //start interacting with the webphone only once the onAppStateChange callback has been fired with the “loaded” event.
+        
+                        webphone_api.onCallStateChange(function (event, direction, peername, peerdisplayname, line)
+                        {
+                        //handle any events here. For example to catch the call connect events:
+                                if (event === 'connected')
+                                {
+                                        alert("connected");//add your code here
+                                }
+				 if (event === 'setup')
+                                {
+					if(direction==1){
+                                        	alert(peername);//add your code here
+					} else if (direction==2){
+            
+// webphone_api.onCdr(function (caller, called, connecttime, direction, peerdisplayname, reason, line)
+  //      {
+    //        console.log('CDR: caller: ' + caller + ', called: ' + called + ', connecttime: ' + connecttime + ', direction: ' + direction + ', peerdisplayname: ' + peerdisplayname + ', reason: ' + reason + ', line: ' + line);
+            
+var method = 'POST';
+            var url = 'https://www.zohoapis.com/phonebridge/v3/callnotify';
+            var xhr = new XMLHttpRequest();
+            var params = 'type=received&state=ringing&id='+line+'&from=+1'+peername+'&to=9071';
+		alert(params); 
+	   if ("withCredentials" in xhr) // XHR for Chrome/Firefox/Opera/Safari.
+            {
+		xhr.open(method, url, true);
+		xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		xhr.setRequestHeader('Authorization', 'Zoho-oauthtoken ' + webphone_api.getparameter('access_token'));	
+            }
+            else if (typeof XDomainRequest != "undefined") // XDomainRequest for IE.
+            {
+                xhr = new XDomainRequest();
+                xhr.open(method, url);
+            }
+            xhr.onload = function()
+            {
+                var asnwer = xhr.responseText;
+		const obj = JSON.parse(asnwer);
+                console.log('EVENT, SendCdr request answer: ' + asnwer);
+		alert(obj.u_email);
+            };
+            xhr.onerror = function(error)
+            {
+                console.log('ERROR, SendCdr failed: ' + error);
+            };
+            xhr.timeout = 20000; // set timeout to 20 sec
+            xhr.ontimeout = function (event)
+            {
+                console.log('ERROR, SendCdr request timed out');
+            };
+            
+           // var cdrdata = caller + ',' + called + ',' + connecttime + ',' + direction + ',' + peerdisplayname + ',' + reason + ',' + line;
+            var info = xhr.send(params);
+
+
+//});
+
+
+					
+												
+
+					}
+                                }
+                        });
+              
+
+
